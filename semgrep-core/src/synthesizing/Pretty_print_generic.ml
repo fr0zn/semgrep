@@ -77,7 +77,7 @@ let print_bool env = function
        | Lang.Javascript
        | Lang.JSON | Lang.Yaml
        | Lang.OCaml | Lang.Ruby | Lang.Typescript
-       | Lang.Csharp | Lang.PHP | Lang.Kotlin | Lang.Lua | Lang.Rust
+       | Lang.Csharp | Lang.PHP | Lang.Kotlin | Lang.Lua | Lang.Rust | Lang.Solidity
          -> "true"
        | Lang.R -> "TRUE")
   | false ->
@@ -88,7 +88,7 @@ let print_bool env = function
        | Lang.JSON | Lang.Yaml
        | Lang.Javascript
        | Lang.OCaml | Lang.Ruby | Lang.Typescript
-       | Lang.Csharp | Lang.PHP | Lang.Kotlin | Lang.Lua | Lang.Rust
+       | Lang.Csharp | Lang.PHP | Lang.Kotlin | Lang.Lua | Lang.Rust | Lang.Solidity
          -> "false"
        | Lang.R -> "FALSE")
 
@@ -183,7 +183,7 @@ and if_stmt env level (tok, e, s, sopt) =
      | Lang.Python | Lang.Python2 | Lang.Python3 -> (no_paren_cond, "elif", colon_body)
      | Lang.Java | Lang.Go | Lang.C | Lang.Cplusplus | Lang.Csharp
      | Lang.JSON | Lang.Javascript | Lang.Typescript
-     | Lang.Kotlin | Lang.Rust | Lang.R
+     | Lang.Kotlin | Lang.Rust | Lang.R | Lang.Solidity
        -> (paren_cond, "else if", bracket_body)
      | Lang.Lua
        -> (paren_cond, "elseif", bracket_body)
@@ -212,7 +212,7 @@ and while_stmt env level (tok, e, s) =
      | Lang.PHP | Lang.Lua | Lang.Yaml -> raise Todo
      | Lang.Python | Lang.Python2 | Lang.Python3 -> python_while
      | Lang.Java | Lang.C | Lang.Cplusplus | Lang.Csharp | Lang.Kotlin
-     | Lang.JSON | Lang.Javascript | Lang.Typescript | Lang.Rust | Lang.R -> c_while
+     | Lang.JSON | Lang.Javascript | Lang.Typescript | Lang.Rust | Lang.R | Lang.Solidity -> c_while
      | Lang.Go -> go_while
      | Lang.Ruby -> ruby_while
      | Lang.OCaml -> ocaml_while
@@ -227,7 +227,7 @@ and do_while stmt env level (s, e) =
      | Lang.PHP | Lang.Lua | Lang.Yaml -> raise Todo
 
      | Lang.Java | Lang.C | Lang.Cplusplus | Lang.Csharp | Lang.Kotlin
-     | Lang.Javascript | Lang.Typescript -> c_do_while
+     | Lang.Javascript | Lang.Typescript | Lang.Solidity -> c_do_while
      | Lang.Python | Lang.Python2 | Lang.Python3
      | Lang.Go | Lang.JSON | Lang.OCaml | Lang.Rust| Lang.R -> failwith "impossible; no do while"
      | Lang.Ruby -> failwith "ruby is so weird (here, do while loop)"
@@ -241,7 +241,7 @@ and for_stmt env level (for_tok, hdr, s) =
      | Lang.PHP | Lang.Lua | Lang.Yaml -> raise Todo
 
      | Lang.Java | Lang.C | Lang.Cplusplus | Lang.Csharp | Lang.Kotlin
-     | Lang.Javascript | Lang.Typescript | Lang.Rust | Lang.R -> F.sprintf "%s (%s) %s"
+     | Lang.Javascript | Lang.Typescript | Lang.Rust | Lang.R | Lang.Solidity -> F.sprintf "%s (%s) %s"
      | Lang.Go -> F.sprintf "%s %s %s"
      | Lang.Python | Lang.Python2 | Lang.Python3 -> F.sprintf "%s %s:\n%s"
      | Lang.Ruby -> F.sprintf "%s %s\ndo %s\nend"
@@ -276,7 +276,7 @@ and def_stmt env (entity, def_kind) =
       (match env.lang with
        | Lang.PHP | Lang.Lua | Lang.Yaml -> raise Todo
 
-       | Lang.Java | Lang.C | Lang.Cplusplus | Lang.Csharp | Lang.Kotlin
+       | Lang.Java | Lang.C | Lang.Cplusplus | Lang.Csharp | Lang.Kotlin | Lang.Solidity
          -> (fun typ id _e -> F.sprintf "%s %s;" typ id),
             (fun typ id e -> F.sprintf "%s %s = %s;" typ id e)
        | Lang.Javascript | Lang.Typescript
@@ -317,7 +317,7 @@ and return env (tok, eopt) _sc =
   match env.lang with
   | Lang.PHP | Lang.Yaml -> raise Todo
   | Lang.Java | Lang.C | Lang.Cplusplus | Lang.Csharp | Lang.Kotlin
-  | Lang.Rust  -> F.sprintf "%s %s;" (token "return" tok) to_return
+  | Lang.Rust | Lang.Solidity  -> F.sprintf "%s %s;" (token "return" tok) to_return
   | Lang.Python | Lang.Python2 | Lang.Python3
   | Lang.Go | Lang.Ruby | Lang.OCaml
   | Lang.JSON | Lang.Javascript | Lang.Typescript | Lang.Lua
@@ -335,7 +335,7 @@ and break env (tok, lbl) _sc =
   match env.lang with
   | Lang.PHP | Lang.Yaml -> raise Todo
   | Lang.Java | Lang.C | Lang.Cplusplus | Lang.Csharp | Lang.Kotlin
-  | Lang.Rust  -> F.sprintf "%s%s;" (token "break" tok) lbl_str
+  | Lang.Rust | Lang.Solidity  -> F.sprintf "%s%s;" (token "break" tok) lbl_str
   | Lang.Python | Lang.Python2 | Lang.Python3
   | Lang.Go | Lang.Ruby | Lang.OCaml
   | Lang.JSON | Lang.Javascript | Lang.Typescript | Lang.Lua | Lang.R
@@ -352,7 +352,7 @@ and continue env (tok, lbl) _sc =
   match env.lang with
   | Lang.PHP | Lang.Yaml -> raise Todo
   | Lang.Java | Lang.C | Lang.Cplusplus | Lang.Csharp | Lang.Kotlin | Lang.Lua
-  | Lang.Rust  -> F.sprintf "%s%s;" (token "continue" tok) lbl_str
+  | Lang.Rust | Lang.Solidity  -> F.sprintf "%s%s;" (token "continue" tok) lbl_str
   | Lang.Python | Lang.Python2 | Lang.Python3
   | Lang.Go | Lang.Ruby | Lang.OCaml
   | Lang.JSON | Lang.Javascript | Lang.Typescript
@@ -435,7 +435,7 @@ and literal env = function
            "'" ^ s ^ "'"
        | Lang.Java | Lang.Go | Lang.C | Lang.Cplusplus | Lang.Csharp | Lang.Kotlin
        | Lang.JSON | Lang.Javascript
-       | Lang.OCaml | Lang.Ruby | Lang.Typescript | Lang.Lua | Lang.Rust | Lang.R ->
+       | Lang.OCaml | Lang.Ruby | Lang.Typescript | Lang.Lua | Lang.Rust | Lang.R | Lang.Solidity ->
            "\"" ^ s ^ "\""
       )
   | Regexp (s,_) -> s

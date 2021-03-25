@@ -54,6 +54,7 @@ type t =
   | R
   (* config files *)
   | JSON | Yaml
+  | Solidity
   (*e: type [[Lang.t]] *)
 [@@deriving show, eq]
 
@@ -93,6 +94,7 @@ let list_of_lang = [
   "rust", Rust;
   "r", R;
   "yaml", Yaml;
+  "solidity", Solidity;
 ]
 (*e: constant [[Lang.list_of_lang]] *)
 
@@ -128,6 +130,7 @@ let langs_of_filename filename =
   | FT.PL (FT.Lua) -> [Lua]
   | FT.PL (FT.Rust) -> [Rust]
   | FT.PL (FT.R) -> [R]
+  | FT.PL (FT.Solidity) -> [Solidity]
   | _ -> []
 (*e: function [[Lang.langs_of_filename]] *)
 
@@ -152,6 +155,7 @@ let string_of_lang = function
   | Rust -> "Rust"
   | R -> "R"
   | Yaml -> "Yaml"
+  | Solidity -> "Solidity"
 (*e: function [[Lang.string_of_lang]] *)
 
 (*s: function [[Lang.ext_of_lang]] *)
@@ -174,6 +178,7 @@ let ext_of_lang = function
   | Rust -> ["rs"]
   | R -> ["r"; "R"]
   | Yaml -> ["yaml";"yml"]
+  | Solidity -> ["sol"]
 (*e: function [[Lang.ext_of_lang]] *)
 
 (*s: function [[Lang.find_source]] *)

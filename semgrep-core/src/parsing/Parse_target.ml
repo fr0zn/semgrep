@@ -248,7 +248,8 @@ let just_parse_with_lang lang file =
       run file [TreeSitter Parse_lua_tree_sitter.parse] (fun x -> x)
   | Lang.Rust ->
       run file [TreeSitter Parse_rust_tree_sitter.parse] (fun x -> x)
-
+  | Lang.Solidity ->
+      run file [TreeSitter Parse_rust_tree_sitter.parse] (fun x -> x)
   | Lang.C ->
       run file [
         (* this internally uses the CST for c++ *)

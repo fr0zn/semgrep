@@ -24,6 +24,7 @@ type t =
   | R
   (* config files *)
   | JSON | Yaml
+  | Solidity
   (*e: type [[Lang.t]] *)
 val pp: Format.formatter -> t -> unit
 val show: t -> string
